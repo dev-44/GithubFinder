@@ -32,11 +32,12 @@ export const searchUsers = async (text) => {
 
     //return items
     
-    const response = await github.get(`/search/users/${params}`)
+    const response = await github.get(`/search/users?${params}`)
     return response.data.items
 
 }
 
+/*
 //Get single user
 export const getUser = async (login) => {
     //setLoading()
@@ -52,10 +53,10 @@ export const getUser = async (login) => {
     } else {
         const data = await response.json()
 
-        /*dispatch({
-            type: 'GET_USER',
-            payload: data,
-        })*/
+        //dispatch({
+        //    type: 'GET_USER',
+        //    payload: data,
+        //})
 
         return data
     }
@@ -79,10 +80,21 @@ export const getUserRepos = async (login) => {
 
     const data = await response.json()
 
-    /*dispatch({
-        type: 'GET_REPOS',
-        payload: data,
-    })*/
+    //dispatch({
+    //    type: 'GET_REPOS',
+    //    payload: data,
+    //})
 
     return data
+}
+*/
+
+//Get user and repos
+export const getUserAndRepos = async(login) => {
+    const [user, repos] = await Promise.all([
+        github.get(`/users/${login}`),
+        github.get(`/users/${login}/repos`)
+    ])
+
+    return {user: user.data, repos: repos.data}
 }

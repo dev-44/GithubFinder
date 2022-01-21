@@ -4,7 +4,8 @@ import {useParams, Link} from 'react-router-dom'
 import {FaCodepen, FaStore, FaUserFriends, FaUsers} from 'react-icons/fa'
 import Spinner from '../components/layout/Spinner'
 import RepoList from '../components/repos/RepoList'
-import {getUser, getUserRepos} from '../context/github/GithubAcions'
+//import {getUser, getUserRepos} from '../context/github/GithubAcions'
+import {getUserAndRepos} from '../context/github/GithubAcions'
 
 function User() {
 
@@ -20,24 +21,31 @@ function User() {
 
     useEffect(() => {   
         dispatch({type: 'SET_LOADING'})
+
         const getUserData = async() => {
 
-            const userData = await  getUser(params.login)
+            /*const userData = await getUser(params.login)
             dispatch({
                 type: 'GET_USER',
                 payload: userData
             })
 
-            const userRepoData = await  getUserRepos(params.login)
+            const userRepoData = await getUserRepos(params.login)
             dispatch({
                 type: 'GET_REPOS',
                 payload: userRepoData
+            })*/
+
+            const userData = await getUserAndRepos(params.login)
+            dispatch({
+                type: 'GET_USER_AND_REPOS',
+                payload: userData
             })
         }
 
         getUserData()
 
-    }, [])
+    }, [dispatch, params.login])
     //No se puede utilizar el asyn con useEffect, por ese motivo se crea otra función
 
     
