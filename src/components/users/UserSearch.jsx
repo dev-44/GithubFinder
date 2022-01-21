@@ -1,17 +1,19 @@
 import {useState, useContext} from 'react'
 import GithubContext from '../../context/github/GithubContext'
 import AlertContext from '../../context/alert/AlertContext'
+import {searchUsers} from '../../context/github/GithubAcions'
 
 function UserSearch() {
 
     const [text, setText] = useState('')
 
-    const {users, searchUsers, clearUsers} = useContext(GithubContext)
+    //const {users, searchUsers, clearUsers} = useContext(GithubContext)        whithout GithubActions
+    const {users, dispatch} = useContext(GithubContext)
     const {setAlert} = useContext(AlertContext)
 
     const handleChange = (e) => setText(e.target.value)
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
         if (text === '') {
@@ -19,12 +21,26 @@ function UserSearch() {
             setAlert('Please enter something', 'error')
         } else {
             // @todo - search users
-            searchUsers(text)
+            //searchUsers(text)
+
+            dispatch({type: 'SET_LOADING'})
+
+            const users = await searchUsers(text)
+
+            dispatch({
+                type: 'GET_USERS',
+                payload: users
+            })
             setText('')
         }
     }
 
-    const handleClear = () => clearUsers()
+    //const handleClear = () => clearUsers()
+    const handleClear = () => {
+        dispatch({
+            type: 'CLEAR_USERS'
+        })
+    }
 
     return (
         <div className="grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 mb-8 gap-8">

@@ -4,17 +4,41 @@ import {useParams, Link} from 'react-router-dom'
 import {FaCodepen, FaStore, FaUserFriends, FaUsers} from 'react-icons/fa'
 import Spinner from '../components/layout/Spinner'
 import RepoList from '../components/repos/RepoList'
+import {getUser, getUserRepos} from '../context/github/GithubAcions'
 
 function User() {
 
-    const {getUser, user, loading, getUserRepos, repos} = useContext(GithubContext)
+    //const {getUser, user, loading, getUserRepos, repos} = useContext(GithubContext)
+    const {user, loading, repos, dispatch} = useContext(GithubContext)
     const params = useParams()
 
-    useEffect(() => {
+    /*useEffect(() => {
         getUser(params.login)
         getUserRepos(params.login)
         // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])*/
+
+    useEffect(() => {   
+        dispatch({type: 'SET_LOADING'})
+        const getUserData = async() => {
+
+            const userData = await  getUser(params.login)
+            dispatch({
+                type: 'GET_USER',
+                payload: userData
+            })
+
+            const userRepoData = await  getUserRepos(params.login)
+            dispatch({
+                type: 'GET_REPOS',
+                payload: userRepoData
+            })
+        }
+
+        getUserData()
+
     }, [])
+    //No se puede utilizar el asyn con useEffect, por ese motivo se crea otra función
 
     
     const {
