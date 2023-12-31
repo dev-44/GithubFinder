@@ -32,7 +32,7 @@ export const searchUsers = async (text) => {
 
     //return items
     
-    const response = await github.get(`/users/${params}`)
+    const response = await github.get(`/users/${text}`)
     return response.data.items
 
 }
